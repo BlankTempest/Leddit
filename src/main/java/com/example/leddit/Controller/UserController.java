@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -30,7 +31,7 @@ public class UserController {
             String token = userService.generateToken();
             User user = userService.findByUsername(username).orElse(null);
 
-            if (user != null) {
+            if (user != null || user.getActive() != 0) {
                 // Store token in the database
                 userService.storeToken(user.getId(), token);
 
@@ -69,5 +70,17 @@ public class UserController {
         // Invalidate the session to log out the user
         session.invalidate();
         return "redirect:/login";
+    }
+
+    @GetMapping("/users")
+    public String getUsers(Model model) {
+        // Retrieve all users from the database
+        List<User> users = userService.getAllUsers();
+
+        // Add the list of users to the model
+        model.addAttribute("users", users);
+
+        // Return the name of the Thymeleaf template to render
+        return "view_users";
     }
 }

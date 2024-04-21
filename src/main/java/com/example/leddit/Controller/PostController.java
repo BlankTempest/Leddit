@@ -1,5 +1,6 @@
 package com.example.leddit.Controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,9 +11,12 @@ import java.time.LocalDateTime;
 import com.example.leddit.Model.Post;
 import com.example.leddit.Model.Comment;
 import com.example.leddit.Model.Subreddit;
+import com.example.leddit.Model.User;
 import com.example.leddit.Service.SubredditService;
 import com.example.leddit.Service.PostService;
 import com.example.leddit.Service.UserService;
+import com.example.leddit.Service.VotesService;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 import com.example.leddit.Service.CommentService;
@@ -27,6 +31,9 @@ public class PostController {
     private final CommentService commentService;
     private final PostService postService;
     private final UserService userService;
+
+    @Autowired
+    private VotesService votesService;
 
     public PostController(SubredditService subredditService, CommentService commentService, PostService postService, UserService userService) {
         this.subredditService = subredditService;
@@ -51,7 +58,10 @@ public class PostController {
         // Retrieve comments for the post
         List<Comment> comments = commentService.getCommentsByPostId(id2);
         model.addAttribute("comments", comments);
-        
+
+        int totalVotes = votesService.countVotes(post.getId(), post.getAuthor().getId(), null);
+        model.addAttribute("totalVotes", totalVotes);
+
         return "view_post";
     }
 
@@ -77,8 +87,8 @@ public class PostController {
 
         if (token == null || !userService.isTokenValid(token)) {
             System.out.println("User is Anonymous or has expired login");
+            return "redirect:subreddit/";
         }
-
         // Validate the token and retrieve the user ID
         Long userId = userService.getUserIdFromToken(token);
         

@@ -1,25 +1,24 @@
 package com.example.leddit.Model;
 
 import jakarta.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "usertokens")
+@Table(name = "Usertokens")
 public class UserToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "token", nullable = false, unique = true)
     private String token;
 
-    @Column(nullable = false)
-    private Date expiresAt;
-
+    @Column(name = "expires_at", nullable = false)
+    private LocalDateTime expiresAt = LocalDateTime.now().plusHours(12);
 
     public Long getId() {
         return id;
@@ -45,11 +44,11 @@ public class UserToken {
         this.token = token;
     }
 
-    public Date getExpiresAt() {
+    public LocalDateTime getExpiresAt() {
         return expiresAt;
     }
 
-    public void setExpiresAt(Date expiresAt) {
+    public void setExpiresAt(LocalDateTime expiresAt) {
         this.expiresAt = expiresAt;
     }
 }

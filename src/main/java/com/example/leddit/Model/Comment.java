@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "comments")
-public class Comment {
+@Table(name = "Comments")
+public class Comment implements Content {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +27,13 @@ public class Comment {
 
     public Comment() {
         // Default constructor
+    }
+
+    public Comment(String content, Post post, User author, LocalDateTime createdAt) {
+        this.content = content;
+        this.post = post;
+        this.author = author;
+        this.createdDate = createdAt;
     }
 
 

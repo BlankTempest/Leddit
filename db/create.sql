@@ -6,6 +6,8 @@ CREATE TABLE Users (
     username VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
+    active BOOLEAN DEFAULT TRUE,
+    admin BOOLEAN DEFAULT FALSE,
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -45,16 +47,10 @@ CREATE TABLE Votes (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
     post_id BIGINT DEFAULT NULL,
-    comment_id BIGINT DEFAULT NULL,
     vote_type ENUM('UPVOTE', 'DOWNVOTE') NOT NULL,
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES Users(id),
-    FOREIGN KEY (post_id) REFERENCES Posts(id),
-    FOREIGN KEY (comment_id) REFERENCES Comments(id),
-    CHECK (
-        (post_id IS NOT NULL AND comment_id IS NULL) OR
-        (post_id IS NULL AND comment_id IS NOT NULL)
-    )
+    FOREIGN KEY (post_id) REFERENCES Posts(id)
 );
 
 CREATE TABLE UserTokens (

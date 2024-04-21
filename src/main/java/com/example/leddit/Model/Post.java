@@ -6,8 +6,8 @@ import jakarta.persistence.*;
 import java.util.Base64;
 
 @Entity
-@Table(name = "posts")
-public class Post {
+@Table(name = "Posts")
+public class Post implements Content {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -86,11 +86,11 @@ public class Post {
         this.author = author;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedDate(LocalDateTime createdAt) {
         this.createdDate = createdAt;
     }
 

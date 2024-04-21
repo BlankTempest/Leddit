@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import com.example.leddit.Model.Post;
 import com.example.leddit.Model.User;
+import com.example.leddit.Model.Content;
+import com.example.leddit.Model.ContentFactory;
 import com.example.leddit.Repository.PostRepository;
 
 import com.example.leddit.Model.Subreddit;
@@ -14,6 +16,7 @@ import java.time.LocalDateTime;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 @Service
 public class PostService {
@@ -48,12 +51,13 @@ public class PostService {
                 new IllegalArgumentException("Invalid user ID: " + userId));
 
         // Create a new Post object
-        Post newPost = new Post();
-        newPost.setTitle(title);
-        newPost.setContent(content);
-        newPost.setAuthor(author);
-        newPost.setSubreddit(subreddit);
-        newPost.setCreatedAt(LocalDateTime.now());
+        Post newPost = (Post) ContentFactory.createContent(ContentFactory.ContentType.POST, title, content, subreddit, author, LocalDateTime.now());
+        // Post newPost = new Post();
+        // newPost.setTitle(title);
+        // newPost.setContent(content);
+        // newPost.setAuthor(author);
+        // newPost.setSubreddit(subreddit);
+        // newPost.setCreatedAt(LocalDateTime.now());
 
         if (!image.isEmpty()) {
             try {
@@ -61,6 +65,7 @@ public class PostService {
                 newPost.setImageData(imageData);
             } catch (IOException e) {
                 // Handle error
+                System.out.println(e);
                 System.out.println("Error uploading image");
             }
         }

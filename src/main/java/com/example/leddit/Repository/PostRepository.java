@@ -4,12 +4,14 @@ import com.example.leddit.Model.Post;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findBySubredditId(Long subredditId);
     List<Post> findByAuthorId(Long authorId);
+    Optional<Post> findByIdAndAuthorId(Long id, Long authorId);
+    void deleteByIdAndSubredditId(Long id, Long subredditId);
 
 }

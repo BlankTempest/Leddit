@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.UUID;
+import java.util.List;
+
 
 
 @Service
@@ -48,7 +50,7 @@ public class UserService {
         if (userToken.isPresent()) {
             // Check if token is expired (optional)
             UserToken tokenRecord = userToken.get();
-            if (tokenRecord.getExpiresAt().after(new Date())) {
+            if (LocalDateTime.now().isAfter(tokenRecord.getExpiresAt())) {
                 return true;
             }
         }
@@ -60,7 +62,7 @@ public class UserService {
         if (userToken.isPresent()) {
             // Check if token is expired (optional)
             UserToken tokenRecord = userToken.get();
-            if (tokenRecord.getExpiresAt().after(new Date())) {
+            if (LocalDateTime.now().isAfter(tokenRecord.getExpiresAt())) {
                 return tokenRecord.getUserId();
             }
         }
@@ -76,12 +78,12 @@ public class UserService {
         userToken.setUserId(userId);
         userToken.setToken(token);
 
-        Date currentDate = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentDate);
-        calendar.add(Calendar.HOUR, 12);
-        Date expirationDate = calendar.getTime();
-        userToken.setExpiresAt(expirationDate);
+        // Date currentDate = new Date();
+        // Calendar calendar = Calendar.getInstance();
+        // calendar.setTime(currentDate);
+        // calendar.add(Calendar.HOUR, 12);
+        // Date expirationDate = calendar.getTime();
+        userToken.setExpiresAt(LocalDateTime.now());
         
         userTokenRepository.save(userToken);
     }    
@@ -108,5 +110,10 @@ public class UserService {
         // Fetch the user by ID from the repository
         return userRepository.findById(userId).orElse(null);
     }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
     
 }

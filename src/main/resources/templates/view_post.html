@@ -105,6 +105,10 @@
             height: 300px;
             object-fit: contain;
         }
+
+        .vote-buttons {
+            margin-top: 10px;
+        }
     </style>
 </head>
 
@@ -114,7 +118,7 @@
             <h1 th:text="${post.title}">Post Title</h1>
             <div class="post-details">
                 <span>Posted by <strong th:text="${post.author.username}">Username</strong></span> | 
-                <span th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">Date and Time</span>
+                <span th:text="${#temporals.format(post.createdDate, 'yyyy-MM-dd HH:mm')}">Date and Time</span>
             </div>
         </div>
 
@@ -123,7 +127,16 @@
         </div>
 
         <img th:if="${imageDataAsBase64 != null}" th:src="'data:image/png;base64,' + ${imageDataAsBase64}" alt="Post Image" class="post-image">
+        
+        <div class="total-votes" th:text="${totalVotes}">
+            Total Votes: <!-- This will be replaced by the actual vote count -->
+        </div>
 
+        <div class="vote-buttons">
+            <button th:onclick="upvotePost([[${post.id}]])" class="upvote-btn">Upvote</button>
+            <button th:onclick="downvotePost([[${post.id}]])" class="downvote-btn">Downvote</button>
+        </div>
+        
         <div class="add-comment-form">
             <h3>Add a Comment</h3>
             <form onsubmit="submitCommentForm(event)" method="POST">
@@ -133,6 +146,35 @@
         </div>
 
         <script>
+            function deletePost(postId, subredditId) {
+                // Get the token from session storage
+                var token = sessionStorage.getItem('authToken');
+                var url = `/delete/post/${postId}?subredditId=${subredditId}`;
+                console.log(url)
+                // Make the DELETE request to delete the post
+                fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // If successful, refresh the page
+                        window.location.href = `/subreddit/${subredditId}`;
+                    } else {
+                        // If error, show the response body in an alert
+                        return response.text().then(errorMessage => {
+                            alert(errorMessage);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting the post.');
+                });
+            }
+
             function submitCommentForm(event) {
                 event.preventDefault();
 
@@ -168,6 +210,65 @@
                     alert('Unable to submit comment. Please try again.');
                 });
             }
+            function upvotePost(postId) {
+                const token = sessionStorage.getItem('authToken');
+                const url = `/votes/upvote`;
+                var formData = new FormData()
+                formData.append("userId", token)
+                formData.append("postId", postId)
+                fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // If successful, you may want to update UI or show a message
+                        console.log('Post upvoted successfully');
+                        window.location.reload()
+                    } else {
+                        // Handle error response
+                        console.error('Error:', response.statusText);
+                        alert('Unable to upvote the post. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while upvoting the post.');
+                });
+            }
+
+            function downvotePost(postId) {
+                const token = sessionStorage.getItem('authToken');
+                const url = `/votes/downvote`;
+                var formData = new FormData()
+                formData.append("userId", token)
+                formData.append("postId", postId)
+                fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // If successful, you may want to update UI or show a message
+                        console.log('Post downvoted successfully');
+                        window.location.reload()
+                    } else {
+                        // Handle error response
+                        console.error('Error:', response.statusText);
+                        alert('Unable to downvote the post. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while downvoting the post.');
+                });
+            }
         </script>
 
         <div class="comments-section">
@@ -178,7 +279,8 @@
                 <p th:text="${#temporals.format(comment.createdDate, 'yyyy-MM-dd HH:mm')}">Date and Time</p>
             </div>
         </div>
-
+        <button th:onclick="deletePost([[${post.id}]], [[${post.subreddit.id}]])" class="delete-btn">Delete</button>
+        <br/>
         <a th:href="@{/subreddit/{id}(id=${post.subreddit.id})}" class="back-link">Back to Subreddit</a>
     </div>
 </body>

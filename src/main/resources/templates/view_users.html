@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>User Management</title>
+    <style>
+        body {
+            font-family: 'Helvetica', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fafafa;
+            color: #333;
+        }
+
+        .container {
+            width: 80%;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #ff4500;
+        }
+
+        .user-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #f4f4f4;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-name {
+            font-weight: bold;
+            color: #0079d3;
+        }
+
+        .ban-button, .unban-button {
+            padding: 5px 10px;
+            background-color: #0079d3;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .ban-button:hover, .unban-button:hover {
+            background-color: #005f9e;
+        }
+
+        img {
+            display: block;
+            margin: 0 auto;
+            height: 100px;
+            object-fit: contain;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>User Management</h1>
+
+        <div class="users">
+            <h2>Users</h2>
+            <div th:each="user : ${users}" class="user-item">
+                <p class="user-name" th:text="${user.username}"></p>
+                <p th:text="${user.email}"></p>
+                <p th:text="${user.active == 1 ? 'Active' : 'Inactive'}"></p>
+                <button th:if="${user.active}" th:onclick="banUser([[${user.id}]])" class="ban-button">Ban</button>
+                <button th:unless="${user.active}" th:onclick="unBanUser([[${user.id}]])" class="unban-button">Unban</button>
+                <button th:if="${user.admin}" th:onclick="removeAdmin([[${user.id}]])" class="make-admin-button">Remove Admin</button>
+                <button th:unless="${user.admin}" th:onclick="makeAdmin([[${user.id}]])" class="remove-admin-button">Make Admin</button>
+                
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function makeAdmin(userId) {
+            const token = sessionStorage.getItem('authToken');
+
+            fetch(`/update/user/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    "Authorization" : `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // User banned successfully, update UI as needed
+                    window.location.reload()
+                } else {
+                    // Handle error response
+                    alert('Error moding user:', response.body);
+                }
+            })
+            .catch(error => {
+                // Handle fetch error
+                console.error('Error banning user:', error);
+            });
+        }
+        function removeAdmin(userId) {
+            const token = sessionStorage.getItem('authToken');
+
+            fetch(`/update/user/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    "Authorization" : `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // User banned successfully, update UI as needed
+                    window.location.reload()
+                } else {
+                    // Handle error response
+                    alert('Error unmodding user:', response.body);
+                }
+            })
+            .catch(error => {
+                // Handle fetch error
+                console.error('Error banning user:', error);
+            });
+        }
+        function banUser(userId) {
+            const token = sessionStorage.getItem('authToken');
+
+            fetch(`/delete/user/${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    "Authorization" : `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // User banned successfully, update UI as needed
+                    window.location.reload()
+                } else {
+                    // Handle error response
+                    alert('Error banning user:', response.body);
+                }
+            })
+            .catch(error => {
+                // Handle fetch error
+                console.error('Error banning user:', error);
+            });
+        }
+        function unBanUser(userId) {
+            const token = sessionStorage.getItem('authToken');
+            fetch(`/delete/user/${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    "Authorization" : `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // User banned successfully, update UI as needed
+                    window.location.reload()
+                } else {
+                    console.log(response)
+                    // Handle error response
+                    alert('Error unbanning user:', response.body);
+                }
+            })
+            .catch(error => {
+                // Handle fetch error
+                console.error('Error unbanning user:', error);
+            });
+        }
+    </script>
+</body>
+
+</html>

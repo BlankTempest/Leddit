@@ -3,6 +3,8 @@ package com.example.leddit.Model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import org.aspectj.internal.lang.annotation.ajcITD;
+
 @Entity
 @Table(name = "Users")
 public class User {
@@ -23,6 +25,27 @@ public class User {
     @Column(name = "created_date", nullable = false)
     private LocalDateTime createdDate = LocalDateTime.now();
 
+    @Column(name = "admin", nullable = false)
+    private int admin = 0;
+
+    @Column(name = "active", nullable = false)
+    private int active = 1;
+
+    public int getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(int a) {
+        admin = a;
+    }
+
+    public int getActive() {
+        return active;
+    }
+
+    public void setActive(int a) {
+        active = a;
+    }
 
     public Long getId() {
         return id;
