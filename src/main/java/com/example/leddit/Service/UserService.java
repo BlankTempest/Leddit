@@ -14,6 +14,11 @@ import java.util.Calendar;
 import java.util.UUID;
 import java.util.List;
 
+import java.util.List;
+import com.example.leddit.Model.Post;
+import com.example.leddit.Model.Comment;
+import com.example.leddit.Service.PostService;
+import com.example.leddit.Service.CommentService;
 
 
 @Service
@@ -24,6 +29,12 @@ public class UserService {
 
     @Autowired
     private UserTokenRepository userTokenRepository;
+
+    @Autowired
+    private PostService postService;
+
+    @Autowired
+    private CommentService commentService;
 
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
@@ -115,5 +126,13 @@ public class UserService {
         return userRepository.findAll();
     }
 
+
+    public List<Post> getPostsByUser(User user) {
+        return postService.getPostsByUser(user);
+    }
+
+    public List<Comment> getCommentsByUser(User user) {
+        return commentService.getCommentsByUser(user);
+    }
     
 }

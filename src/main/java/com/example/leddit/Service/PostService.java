@@ -14,6 +14,7 @@ import com.example.leddit.Repository.SubredditRepository;
 import com.example.leddit.Repository.UserRepository;
 import java.time.LocalDateTime;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.List;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -72,6 +73,10 @@ public class PostService {
 
         // Save the new post to the repository
         postRepository.save(newPost);
+    }
+
+    public List<Post> getPostsByUser(User user) {
+        return postRepository.findByAuthor(user);
     }
 }
 
