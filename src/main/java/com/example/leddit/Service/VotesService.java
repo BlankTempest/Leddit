@@ -31,11 +31,14 @@ public class VotesService {
     @Autowired
     private CommentRepository commentRepository;
 
-    public void upvote(User user, Long postId, Long commentId) {
+    public void upvote(User user, Long postId, Long subredditId, Long commentId) {
         // Check if the user exists
-        Optional<Post> post = postRepository.findByIdAndAuthorId(postId, user.getId());
+        Optional<Post> post = postRepository.findByIdAndSubredditId(postId, subredditId);
         Optional<Vote> vote2 = votesRepository.findByUserIdAndPostId(user.getId(), postId);
         // Check if the post or comment exists, depending on the vote type
+        System.out.println(vote2.isPresent() + " " + post.isPresent());
+        System.out.println(user.getId() + " " + postId);
+
         if (!(vote2.isPresent() && vote2.get().getVoteType() == VoteType.UPVOTE) && post.isPresent() && postId != null) { 
             if (vote2.isPresent())
                 votesRepository.delete(vote2.get());
@@ -60,12 +63,12 @@ public class VotesService {
         }
     }
 
-    public void downvote(User user, Long postId, Long commentId) {
+    public void downvote(User user, Long postId, Long subredditId,  Long commentId) {
          // Check if the user exists
-
-         Optional<Post> post = postRepository.findByIdAndAuthorId(postId, user.getId());
+         Optional<Post> post = postRepository.findByIdAndSubredditId(postId, subredditId);
          Optional<Vote> vote2 = votesRepository.findByUserIdAndPostId(user.getId(), postId);
          // Check if the post or comment exists, depending on the vote type
+         System.out.println(vote2.isPresent() + " " + post.isPresent());
          if (!(vote2.isPresent() && vote2.get().getVoteType() == VoteType.DOWNVOTE) &&  post.isPresent() && postId != null) {
             if (vote2.isPresent())
                 votesRepository.delete(vote2.get());

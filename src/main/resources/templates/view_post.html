@@ -161,8 +161,8 @@
         </div>
 
         <div class="vote-buttons">
-            <button th:onclick="upvotePost([[${post.id}]])" class="upvote-btn">Upvote</button>
-            <button th:onclick="downvotePost([[${post.id}]])" class="downvote-btn">Downvote</button>
+            <button th:onclick="upvotePost([[${post.id}]], [[${post.subreddit.id}]])" class="upvote-btn">Upvote</button>
+            <button th:onclick="downvotePost([[${post.id}]], [[${post.subreddit.id}]])" class="downvote-btn">Downvote</button>
         </div>
         
         <div class="add-comment-form">
@@ -238,12 +238,13 @@
                     alert('Unable to submit comment. Please try again.');
                 });
             }
-            function upvotePost(postId) {
+            function upvotePost(postId, subredditId) {
                 const token = sessionStorage.getItem('authToken');
                 const url = `/votes/upvote`;
                 var formData = new FormData()
                 formData.append("userId", token)
                 formData.append("postId", postId)
+                formData.append("subredditId", subredditId)
                 fetch(url, {
                     method: 'POST',
                     body: formData,
@@ -268,12 +269,13 @@
                 });
             }
 
-            function downvotePost(postId) {
+            function downvotePost(postId, subredditId) {
                 const token = sessionStorage.getItem('authToken');
                 const url = `/votes/downvote`;
                 var formData = new FormData()
                 formData.append("userId", token)
                 formData.append("postId", postId)
+                formData.append("subredditId", subredditId)
                 fetch(url, {
                     method: 'POST',
                     body: formData,

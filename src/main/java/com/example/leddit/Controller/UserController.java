@@ -38,10 +38,10 @@ public class UserController {
         boolean isValid = userService.validateLogin(username, password);
         if (isValid) {
             // Successful login, generate token
-            String token = userService.generateToken();
             User user = userService.findByUsername(username).orElse(null);
-
-            if (user != null || user.getActive() != 0) {
+            System.out.println( user.getActive() == 0);
+            if (user != null && user.getActive() != 0) {
+                String token = userService.generateToken();
                 // Store token in the database
                 userService.storeToken(user.getId(), token);
 

@@ -87,7 +87,7 @@ public class PostController {
 
         if (token == null || !userService.isTokenValid(token)) {
             System.out.println("User is Anonymous or has expired login");
-            return "redirect:subreddit/";
+            // return "redirect:subreddit/";
         }
         // Validate the token and retrieve the user ID
         Long userId = userService.getUserIdFromToken(token);

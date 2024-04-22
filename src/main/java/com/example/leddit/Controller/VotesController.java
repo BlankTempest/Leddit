@@ -23,10 +23,11 @@ public class VotesController {
     @PostMapping("/upvote")
     public ResponseEntity<String> upvote(@RequestParam(name = "userId") String userId,
                                          @RequestParam(value = "postId") Long postId,
+                                         @RequestParam(value = "subredditId") Long subredditId,
                                          @RequestParam(value = "commentId", required = false) Long commentId) {
         try {
             User user = userService.getUserFromToken(userId);
-            votesService.upvote(user, postId, commentId);
+            votesService.upvote(user, postId, subredditId, commentId);
             return ResponseEntity.ok("Upvoted successfully");
         } catch (Exception e) {
             System.err.println(e);
@@ -37,10 +38,11 @@ public class VotesController {
     @PostMapping("/downvote")
     public ResponseEntity<String> downvote(@RequestParam(name = "userId") String userId,
                                            @RequestParam(value = "postId") Long postId,
+                                           @RequestParam(value = "subredditId") Long subredditId,
                                            @RequestParam(value = "commentId", required = false) Long commentId) {
         try {
             User user = userService.getUserFromToken(userId);
-            votesService.downvote(user, postId, commentId);
+            votesService.downvote(user, postId, subredditId, commentId);
             return ResponseEntity.ok("Downvoted successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to downvote");

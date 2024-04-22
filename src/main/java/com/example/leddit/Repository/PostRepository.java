@@ -13,6 +13,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findBySubredditId(Long subredditId);
     List<Post> findByAuthorId(Long authorId);
     Optional<Post> findByIdAndAuthorId(Long id, Long authorId);
+    Optional<Post> findByIdAndSubredditId(Long id, Long subredditId);
     void deleteByIdAndSubredditId(Long id, Long subredditId);
     List<Post> findByAuthor(User author);
 

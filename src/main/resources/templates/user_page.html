@@ -134,7 +134,7 @@
                 </div>
                 <div class="post-details">
                     <p>Subreddit: <span th:text="${post.subreddit.name}">Subreddit Name</span></p>
-                    <p>Posted on: <span th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">Date</span></p>
+                    <p>Posted on: <span th:text="${#temporals.format(post.createdDate, 'yyyy-MM-dd HH:mm')}">Date</span></p>
                 </div>
                 <center><img th:if="${post.imageDataAsBase64 != null}" th:src="'data:image/png;base64,' + ${post.imageDataAsBase64}" alt="Post Image" class="post-image"></center>
             </li>
